@@ -1,5 +1,5 @@
 import Vector from '../utils/Vector';
-import { SCREEN_CENTER } from '../consts';
+import { DEVICE_WIDTH, SCREEN_CENTER } from '../consts';
 import { getRandom, getRandomFromArray } from '../helpers';
 
 const possibleColors = [
@@ -17,20 +17,49 @@ const possibleColors = [
 ];
 
 export default class Enemy {
-  constructor() {
-    this.radius = getRandom(5, 30);
-
+  constructor(game) {
+    this.game = game;
+    this.player = this.game.player
+    this.speed = 0.5;
+    this.health = 1;
+    this.radius = getRandom(20, 40);
     this.acceleration = new Vector(0, 0);
-    this.velocity = Vector.random().setMag(3);
-    this.position = SCREEN_CENTER;
+    this.position = Vector.random().setMag(DEVICE_WIDTH / 2 + this.radius).add(SCREEN_CENTER);
     this.color = getRandomFromArray(possibleColors);
   }
 
+  get velocity() {
+    return this.player.position.sub(this.position).setMag(this.speed);
+  }
+
+  get isDead() {
+    return this.health <= 0;
+  }
+
+  hit() {
+    if (this.isDead) return;
+
+    this.health -= this.player.strength;
+
+    if (this.isDead) this.clear();
+  }
+
+  kill() {
+    this.health = 0;
+  }
+
+  clear() {
+    if (!this.widget) return;
+
+    this.widget.setProperty(hmUI.prop.VISIBLE, false);
+    hmUI.deleteWidget(this.widget);
+  }
+
   update() {
-    this.velocity = this.velocity.add(this.acceleration);
+    // this.velocity = this.velocity.add(this.acceleration);
     this.position = this.position.add(this.velocity);
 
-    this.acceleration.set(0, 0);
+    // this.acceleration.set(0, 0);
 
     if (this.widget) {
       this.widget.setProperty(hmUI.prop.MORE, {

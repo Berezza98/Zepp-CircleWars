@@ -1,5 +1,5 @@
-import Ammo from './Ammo';
-import Enemy from './Enemy';
+import AmmoPool from './AmmoPool';
+import EnemyPool from './EnemyPool';
 import Player from './Player';
 
 export default class Game {
@@ -10,14 +10,14 @@ export default class Game {
   }
 
   init() {
-    // const enemies = new Array(15).fill(null).map(el => new Enemy());
     this.player = new Player(this);
-    this.ammo = new Ammo(this);
+    this.enemyPool = new EnemyPool(this);
+    this.ammoPool = new AmmoPool(this);
 
     this.gameObjects = [
       this.player,
-      this.ammo,
-      // ...enemies,
+      this.enemyPool,
+      this.ammoPool,
     ];
   }
 

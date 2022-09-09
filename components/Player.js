@@ -18,6 +18,7 @@ export default class Player {
     this.acceleration = new Vector(0, 0);
     this.velocity = new Vector(0, 0);
     this.shootAngle = 0;
+    this.strength = 1;
     this.position = SCREEN_CENTER;
     this.color = healthColors[this.health];
 
@@ -35,13 +36,17 @@ export default class Player {
     });
   }
 
+  hit(damageValue) {
+    this.health -= damageValue;
+  }
+
   update() {
     this.velocity = this.velocity.add(this.acceleration);
     this.position = this.position.add(this.velocity);
 
     this.acceleration.set(0, 0);
 
-    if (this.widget && this.sight) {
+    if (this.widget) {
       this.widget.setProperty(hmUI.prop.MORE, {
         center_x: this.position.x,
         center_y: this.position.y,
