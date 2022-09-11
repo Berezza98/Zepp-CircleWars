@@ -6,13 +6,13 @@ export default class AmmoPool {
     this.enemies = game.enemyPool;
     this.player = game.player;
     this.pool = [];
-    this.maxLength = 10;
+    // this.maxLength = 10;
     this.delay = 500;
     this.canAdd = true;
   }
 
   addAmmo() {
-    if (this.canAdd && this.pool.length <= this.maxLength) {
+    if (this.canAdd) {
       this.pool.push(new Ammo(this.game));
 
       this.canAdd = false;

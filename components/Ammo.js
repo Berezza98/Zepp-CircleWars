@@ -27,7 +27,7 @@ export default class Ammo {
     if (!this.widget) return;
 
     this.widget.setProperty(hmUI.prop.VISIBLE, false);
-    hmUI.deleteWidget(this.widget);
+    // hmUI.deleteWidget(this.widget);
   }
 
   update() {
