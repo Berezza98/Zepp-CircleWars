@@ -1,5 +1,7 @@
 import Vector from '../utils/Vector';
 import { SCREEN_CENTER } from '../consts';
+import { invertHex } from '../helpers';
+import { AMMO_RADIUS } from './Ammo';
 
 const healthColors = [
   0xfc6950,
@@ -21,6 +23,7 @@ export default class Player {
     this.strength = 1;
     this.position = SCREEN_CENTER;
     this.color = healthColors[this.health];
+    this.sightColor = invertHex(this.color);
 
     this.addSpinEvent();
   }
@@ -38,6 +41,18 @@ export default class Player {
 
   hit(damageValue) {
     this.health -= damageValue;
+
+    this.color = healthColors[this.health];
+    this.sightColor = invertHex(this.color);
+  }
+
+  getSightOptions() {
+    return {
+      center_x: this.sightPosition.x,
+      center_y: this.sightPosition.y,
+      radius: AMMO_RADIUS,
+      color: this.sightColor,
+    };
   }
 
   update() {
@@ -46,18 +61,16 @@ export default class Player {
 
     this.acceleration.set(0, 0);
 
-    if (this.widget) {
-      this.widget.setProperty(hmUI.prop.MORE, {
-        center_x: this.position.x,
-        center_y: this.position.y,
-        radius: this.radius,
-        color: this.color
-      });
+    if (!this.widget) return this.draw();
 
-      return;
-    }
+    this.widget.setProperty(hmUI.prop.MORE, {
+      center_x: this.position.x,
+      center_y: this.position.y,
+      radius: this.radius,
+      color: this.color
+    });
 
-    this.draw();
+    this.sight.setProperty(hmUI.prop.MORE, this.getSightOptions());
   }
 
   draw() {
@@ -67,5 +80,7 @@ export default class Player {
       radius: this.radius,
       color: this.color
     });
+
+    this.sight = hmUI.createWidget(hmUI.widget.CIRCLE, this.getSightOptions());
   }
 }

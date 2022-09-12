@@ -1,6 +1,7 @@
 import Vector from '../utils/Vector';
 import { DEVICE_WIDTH, SCREEN_CENTER } from '../consts';
-import { getRandom, getRandomFromArray } from '../helpers';
+import { getRandom, getRandomFromArray, invertHex } from '../helpers';
+import Text from '../general/Text';
 
 const possibleColors = [
   0xfc6950,
@@ -16,16 +17,28 @@ const possibleColors = [
   0xFF3383,
 ];
 
+const possibleText = ['V', 'O', 'Z'];
+
 export default class Enemy {
   constructor(game) {
     this.game = game;
-    this.player = this.game.player
-    this.speed = 0.5;
+    this.player = this.game.player;
+    this.score = this.game.score;
+    this.speed = 1 + this.score.counter * 0.05;
     this.health = 1;
     this.radius = getRandom(20, 40);
     this.acceleration = new Vector(0, 0);
     this.position = Vector.random().setMag(DEVICE_WIDTH / 2 + this.radius).add(SCREEN_CENTER);
     this.color = getRandomFromArray(possibleColors);
+    this.text = new Text({
+      x: this.position.x,
+      y: this.position.y,
+      w: this.radius * 2,
+      h: this.radius * 2,
+      text_size: this.radius,
+      text: getRandomFromArray(possibleText),
+      color: invertHex(this.color),
+    });
   }
 
   get velocity() {
@@ -41,38 +54,44 @@ export default class Enemy {
 
     this.health -= this.player.strength;
 
-    if (this.isDead) this.clear();
+    if (this.isDead) {
+      this.score.increase();
+      this.clear();
+    }
   }
 
   kill() {
     this.health = 0;
+
+    this.score.increase();
+    this.clear();
   }
 
   clear() {
     if (!this.widget) return;
 
+    this.text.clear();
     this.widget.setProperty(hmUI.prop.VISIBLE, false);
-    // hmUI.deleteWidget(this.widget);
+    this.widget = null;
   }
 
   update() {
-    // this.velocity = this.velocity.add(this.acceleration);
     this.position = this.position.add(this.velocity);
 
-    // this.acceleration.set(0, 0);
+    if (!this.widget) return this.draw();
 
-    if (this.widget) {
-      this.widget.setProperty(hmUI.prop.MORE, {
-        center_x: this.position.x,
-        center_y: this.position.y,
-        radius: this.radius,
-        color: this.color
-      });
+    this.widget.setProperty(hmUI.prop.MORE, {
+      center_x: this.position.x,
+      center_y: this.position.y,
+      radius: this.radius,
+      color: this.color
+    });
 
-      return;
-    }
-
-    this.draw();
+    this.text.set({
+      x: this.position.x,
+      y: this.position.y,
+    });
+    this.text.update();    
   }
 
   draw() {

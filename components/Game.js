@@ -1,6 +1,7 @@
 import AmmoPool from './AmmoPool';
 import EnemyPool from './EnemyPool';
 import Player from './Player';
+import Score from './Score';
 
 export default class Game {
   constructor() {
@@ -10,6 +11,7 @@ export default class Game {
   }
 
   init() {
+    this.score = new Score(this);
     this.player = new Player(this);
     this.enemyPool = new EnemyPool(this);
     this.ammoPool = new AmmoPool(this);

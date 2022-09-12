@@ -27,6 +27,7 @@ export default class Ammo {
     if (!this.widget) return;
 
     this.widget.setProperty(hmUI.prop.VISIBLE, false);
+    this.widget = null;
     // hmUI.deleteWidget(this.widget);
   }
 
@@ -36,18 +37,14 @@ export default class Ammo {
 
     this.acceleration.set(0, 0);
 
-    if (this.widget) {
-      this.widget.setProperty(hmUI.prop.MORE, {
-        center_x: this.position.x,
-        center_y: this.position.y,
-        radius: this.radius,
-        color: this.color
-      });
+    if (!this.widget) return this.draw();
 
-      return;
-    }
-
-    this.draw();
+    this.widget.setProperty(hmUI.prop.MORE, {
+      center_x: this.position.x,
+      center_y: this.position.y,
+      radius: this.radius,
+      color: this.color
+    });
   }
 
   draw() {
