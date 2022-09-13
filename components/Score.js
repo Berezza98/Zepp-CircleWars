@@ -7,4 +7,13 @@ export default class Score {
   increase() {
     this.counter += 1;
   }
+
+  save() {
+    if (this.counter > getApp()._options.globalData.maxScore) {
+      getApp()._options.globalData.maxScore = this.counter;
+      getApp()._options.globalData.localStorage.set({
+        maxScore: this.counter
+      });
+    }
+  }
 }

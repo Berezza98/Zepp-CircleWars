@@ -13,10 +13,10 @@ const healthColors = [
 ];
 
 export default class Player {
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.radius = 40;
-    this.health = 5;
-
+    this.health = 1;
     this.acceleration = new Vector(0, 0);
     this.velocity = new Vector(0, 0);
     this.shootAngle = 0;
@@ -32,6 +32,10 @@ export default class Player {
     return this.position.add(Vector.fromAngle(this.shootAngle).setMag(this.radius));
   }
 
+  get isDead() {
+    return this.health <= 0;
+  }
+
   addSpinEvent() {
     hmApp.registerSpinEvent((key, degree) => {
       this.shootAngle += Math.PI / 180 * degree;
@@ -41,7 +45,10 @@ export default class Player {
 
   hit(damageValue) {
     this.health -= damageValue;
+    
+    if (this.isDead) return this.game.end();
 
+    console.log('PLAYER HIT: ', this.health);
     this.color = healthColors[this.health];
     this.sightColor = invertHex(this.color);
   }

@@ -29,6 +29,17 @@ export default class Game {
     });
   }
 
+  end() {
+    this.stop();
+    this.score.save();
+    hmApp.gotoPage({
+      url: 'page/gtr3-pro/loose/index',
+      param: JSON.stringify({
+        currentScore: this.score.counter
+      })
+    });
+  }
+
   stop() {
     if (!this.timer) return;
 

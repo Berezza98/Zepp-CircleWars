@@ -1,6 +1,6 @@
 import Vector from "../utils/Vector";
 
-export const LOCAL_STORAGE_KEY = 'break-space.txt';
+export const LOCAL_STORAGE_KEY = 'zepp-wars.txt';
 
 export const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = hmSetting.getDeviceInfo();
 
